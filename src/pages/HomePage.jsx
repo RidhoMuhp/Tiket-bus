@@ -9,7 +9,9 @@ export default function HomePage({ trips, onSelectTrip, onSearch }) {
   function handleSearch(search) {
     setFilters(search)
     onSearch(search.date)
-    document.querySelector('#trips').scrollIntoView({ behavior: 'smooth' })
+    if (shouldScroll){
+      document.querySelector('#trips').scrollIntoView({ behavior: 'smooth' })
+    }
   }
   return (
     <>

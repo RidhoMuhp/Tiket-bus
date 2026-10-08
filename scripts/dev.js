@@ -6,6 +6,9 @@ const viteCli = fileURLToPath(new URL('../node_modules/vite/bin/vite.js', import
 const serverEntry = fileURLToPath(new URL('../server/index.js', import.meta.url))
 const apiPort = process.env.PORT || 3001
 const apiHealthUrl = `http://127.0.0.1:${apiPort}/api/trips`
+const isSupabaseConfigured = Boolean(
+  process.env.VITE_SUPABASE_URL && process.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+)
 
 async function isApiRunning() {
   try {
@@ -20,9 +23,12 @@ function startProcess(entry) {
   return spawn(process.execPath, [entry], { stdio: 'inherit' })
 }
 
-// Jalankan Vite selalu; API hanya dijalankan bila belum aktif.
+// Vite selalu diperlukan. API SQLite/MySQL lama dilewati bila frontend sudah
+// memakai Supabase langsung, sehingga tidak ada database lokal yang aktif.
 const processes = [startProcess(viteCli)]
-if (await isApiRunning()) {
+if (isSupabaseConfigured) {
+  console.log('Supabase terkonfigurasi: API SQLite/MySQL lokal tidak dijalankan.')
+} else if (await isApiRunning()) {
   console.log(`API Bustara sudah aktif di http://localhost:${apiPort}`)
 } else {
   processes.push(startProcess(serverEntry))

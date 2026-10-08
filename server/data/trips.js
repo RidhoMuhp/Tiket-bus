@@ -8,7 +8,7 @@ function createTrip({ id, from, to, type, basePrice, depart, arrive, duration, r
 
   return {
     id,
-    operator: type === 'Sleeper' ? 'Bintang Timur' : 'Litha & Co',
+    operator: type === 'Sleeper' ? 'Aneka Sleeper' : 'Sejahtera Bus',
     type,
     from,
     to,

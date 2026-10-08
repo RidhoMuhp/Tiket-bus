@@ -3,7 +3,9 @@ import { isSupabaseConfigured, supabase } from './supabase'
 
 // Mengikuti alamat API dari .env; fallback dipakai bila variabel belum diatur.
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api'
-const isDemoMode = import.meta.env.VITE_DEMO_MODE === 'true'
+// Demo hanya diizinkan pada development lokal agar deployment tidak pernah
+// menampilkan booking sukses tanpa menyimpannya ke database.
+const isDemoMode = import.meta.env.DEV && import.meta.env.VITE_DEMO_MODE === 'true'
 const adminNumber = import.meta.env.VITE_WHATSAPP_ADMIN_NUMBER || '6285179557691'
 
 function createBookingCode() {
@@ -78,32 +80,59 @@ export async function getTrips() {
   }
 }
 
+export async function getOccupiedSeats(tripId, travelDate) {
+  if (isSupabaseConfigured) {
+    const { data, error } = await supabase
+      .from('booking_seats')
+      .select('seat_number')
+      .eq('trip_id', tripId)
+      .eq('travel_date', travelDate)
+    if (error) throw error
+    return data.map(({ seat_number: seatNumber }) => seatNumber)
+  }
+
+  return isDemoMode ? ['A2', 'B4', 'C2', 'D3'] : []
+}
+
+export function subscribeToOccupiedSeats(tripId, travelDate, onSeatBooked) {
+  if (!isSupabaseConfigured) return () => {}
+
+  const channel = supabase
+    .channel(`booking-seats:${tripId}:${travelDate}`)
+    .on(
+      'postgres_changes',
+      {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'booking_seats',
+        filter: `trip_id=eq.${tripId},travel_date=eq.${travelDate}`,
+      },
+      ({ new: bookingSeat }) => onSeatBooked(bookingSeat.seat_number),
+    )
+    .subscribe()
+
+  return () => supabase.removeChannel(channel)
+}
+
 export async function createBooking(payload) {
   if (isSupabaseConfigured) {
     const code = createBookingCode()
-    const { error } = await supabase.from('bookings').insert({
-      code,
-      route: payload.route,
-      passenger: payload.passenger,
-      email: payload.email,
-      phone: payload.phone,
-      seats: payload.seats,
-      travel_date: payload.date,
-      total: payload.total,
+    const { data: bookingId, error } = await supabase.rpc('create_booking', {
+      p_code: code,
+      p_trip_id: payload.tripId,
+      p_passenger: payload.passenger,
+      p_email: payload.email,
+      p_phone: payload.phone,
+      p_seats: payload.seats,
+      p_travel_date: payload.date,
     })
     if (error) throw error
-    return { id: code, code, whatsappUrl: createWhatsAppUrl(payload, code) }
+    return { id: bookingId, code, whatsappUrl: createWhatsAppUrl(payload, code) }
   }
 
   if (isDemoMode) return createDemoBooking(payload)
 
-  try {
-    return await request('/bookings', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    })
-  } catch {
-    return createDemoBooking(payload)
-  }
+  throw new Error(
+    'Supabase belum terhubung. Isi VITE_SUPABASE_URL dan VITE_SUPABASE_PUBLISHABLE_KEY di environment variables Netlify, lalu deploy ulang.',
+  )
 }

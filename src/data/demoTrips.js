@@ -16,7 +16,7 @@ const routes = [
 export const demoTrips = routes.flatMap((route, routeIndex) =>
   ['Bus Biasa', 'Sleeper'].map((type, typeIndex) => ({
     id: routeIndex * 2 + typeIndex + 1,
-    operator: type === 'Sleeper' ? 'Bintang Timur' : 'Litha & Co',
+    operator: type === 'Sleeper' ? 'Aneka Sleeper' : 'Sejahtera Bus',
     type,
     ...route,
     price: route.price + (type === 'Sleeper' ? 50000 : 0),

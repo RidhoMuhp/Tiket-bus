@@ -4,6 +4,8 @@ export default function BookingSummary({
   trip,
   seats,
   onContinue,
+  onBack,
+  backLabel = 'Kembali',
   label = 'Lanjutkan',
   showButton = true,
 }) {
@@ -53,6 +55,16 @@ export default function BookingSummary({
         >
           {label}
           <ArrowRight size={17} />
+        </button>
+      )}
+
+      {onBack && (
+        <button
+          type="button"
+          onClick={onBack}
+          className="mt-3 inline-flex w-full items-center justify-center rounded-xl border border-slate-200 px-5 py-3 text-sm font-bold text-slate-600 hover:bg-slate-100"
+        >
+          {backLabel}
         </button>
       )}
     </aside>

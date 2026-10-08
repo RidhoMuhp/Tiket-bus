@@ -17,8 +17,7 @@ const seats = [
   'D3',
   'D4',
 ]
-const occupiedSeats = ['A2', 'B4', 'C2', 'D3']
-export default function SeatPicker({ selectedSeats, onChange }) {
+export default function SeatPicker({ selectedSeats, occupiedSeats, loading, onChange }) {
   const toggle = (seat) => {
     // Kursi yang sudah terisi tidak dapat diubah pengguna.
     if (!occupiedSeats.includes(seat))
@@ -51,7 +50,7 @@ export default function SeatPicker({ selectedSeats, onChange }) {
             <div className="contents" key={seat}>
               {index % 4 === 2 && <span />}
               <button
-                disabled={occupiedSeats.includes(seat)}
+                disabled={loading || occupiedSeats.includes(seat)}
                 onClick={() => toggle(seat)}
                 className={`seat ${occupiedSeats.includes(seat) ? 'taken' : selectedSeats.includes(seat) ? 'selected' : ''}`}
               >

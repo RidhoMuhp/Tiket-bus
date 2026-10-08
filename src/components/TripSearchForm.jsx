@@ -39,8 +39,10 @@ export default function TripSearchForm({ cities, onSearch }) {
   const availableCities = cities.length ? cities : Object.keys(cityDetails)
 
   function swapLocations() {
-    setFrom(to)
-    setTo(from)
+    const swappedRoute = { from: to, to: from }
+    setFrom(swappedRoute.from)
+    setTo(swappedRoute.to)
+    onSearch(swappedRoute, false)
   }
 
   function submitSearch(event) {

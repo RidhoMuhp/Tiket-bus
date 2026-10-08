@@ -26,6 +26,7 @@ export default function App() {
     setProcessing(true)
     try {
       const saved = await createBooking({
+        tripId: trip.id,
         route: `${trip.from} - ${trip.to}`,
         passenger: passenger.name,
         email: passenger.email,
@@ -37,7 +38,7 @@ export default function App() {
       setBooking(saved)
       setStep(3)
     } catch (error) {
-      alert('Pesanan belum dapat dibuat. Silakan coba lagi.')
+      alert(`Pesanan belum tersimpan. ${error.message}`)
       console.error(error)
     } finally {
       setProcessing(false)
@@ -61,12 +62,16 @@ export default function App() {
           <SeatPage
             trip={trip}
             seats={seats}
+            travelDate={travelDate}
             onSeatsChange={setSeats}
             onContinue={() => setStep(2)}
+            onBack={() => {
+              setSeats([]) 
+              setStep(0)}}
           />
         )}
         {step === 2 && (
-          <BookingPage trip={trip} seats={seats} processing={processing} onSubmit={submitBooking} />
+          <BookingPage trip={trip} seats={seats} processing={processing} onSubmit={submitBooking} onBack={() => setStep(1)} />
         )}
         {step === 3 && (
           <SuccessPage trip={trip} seats={seats} booking={booking} onReset={resetBooking} />
