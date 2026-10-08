@@ -4,7 +4,6 @@
 
 [build.environment]
   NODE_VERSION = "22"
-  VITE_DEMO_MODE = "true"
 
 # React SPA: semua rute frontend tetap dilayani oleh index.html.
 [[redirects]]
