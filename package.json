@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "node scripts/dev.js",
     "dev:web": "vite",
+    "demo": "vite",
     "dev:api": "node server/index.js",
     "client": "npm run dev:web",
     "server": "npm run dev:api",

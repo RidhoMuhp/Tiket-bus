@@ -20,6 +20,16 @@ npm run dev:web
 
 Web tersedia di `http://localhost:5173`; API berjalan di `http://localhost:3002`. File SQLite `bustara.db` dibuat otomatis saat API pertama berjalan. Gunakan `npm run dev` bila ingin menjalankan keduanya sekaligus.
 
+## Mode demo tanpa database
+
+Mode demo aktif secara default (`VITE_DEMO_MODE=true`). Cukup jalankan frontend saja:
+
+```bash
+npm run demo
+```
+
+Daftar perjalanan, kode booking, dan tautan WhatsApp tetap berfungsi menggunakan data lokal di browser. Tidak ada data booking yang disimpan ke SQLite atau MySQL. Untuk menggunakan API/database kembali, ubah `VITE_DEMO_MODE=false` pada `.env`, lalu restart frontend.
+
 ## Notifikasi WhatsApp admin
 
 Sesudah booking tersimpan, backend menghasilkan URL WhatsApp dengan data tiket yang sudah terisi. Pada layar sukses, tombol **Kirim detail ke WhatsApp admin** akan membuka chat admin dengan pesan siap-kirim.
@@ -58,3 +68,19 @@ MYSQL_DATABASE=bustara
 ```
 
 Server akan membuat tabel `bookings` secara otomatis. Untuk kembali ke demo lokal, gunakan `DB_CLIENT=sqlite`.
+
+## Deploy frontend ke Netlify
+
+Proyek frontend sudah siap dideploy ke Netlify melalui `netlify.toml`.
+
+1. Hubungkan repository ke Netlify.
+2. Netlify otomatis menjalankan `npm run build` dan menerbitkan folder `dist`.
+3. Pada **Site configuration → Environment variables**, tambahkan:
+
+   ```text
+   VITE_API_BASE_URL=https://domain-api-anda.com/api
+   ```
+
+4. Deploy ulang situs setelah environment variable disimpan.
+
+Gunakan `.env.production.example` sebagai format nilainya. API Express tidak dapat memakai `localhost` setelah frontend dideploy; deploy API secara terpisah ke layanan Node.js, lalu masukkan URL publiknya ke `VITE_API_BASE_URL`.
