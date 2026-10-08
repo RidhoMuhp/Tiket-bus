@@ -1,0 +1,73 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: Manrope, sans-serif;
+}
+.hero {
+  background: radial-gradient(circle at 50% 5%, #d8f5e6 0, #f8f7f4 54%);
+}
+.field {
+  @apply rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3 text-left;
+}
+.route-field {
+  @apply relative rounded-2xl border bg-slate-50 px-4 py-3 text-left transition duration-200 focus-within:-translate-y-0.5 focus-within:bg-white focus-within:shadow-md;
+}
+.route-field-origin {
+  @apply border-emerald-100 focus-within:border-emerald-400;
+}
+.route-field-destination {
+  @apply border-orange-100 focus-within:border-orange-300;
+}
+.route-field-label {
+  @apply mb-1 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide text-slate-400;
+}
+.route-field-origin .route-field-label {
+  @apply text-emerald-600;
+}
+.route-field-destination .route-field-label {
+  @apply text-coral;
+}
+.route-field select {
+  @apply w-full appearance-none bg-transparent pr-6 text-[15px] font-extrabold outline-none;
+}
+.route-field small {
+  @apply mt-0.5 block text-[10px] font-medium text-slate-400;
+}
+.field span {
+  @apply mb-1 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide text-slate-400;
+}
+.field input,
+.field select {
+  @apply w-full appearance-none bg-transparent text-sm font-bold outline-none;
+}
+.date-field {
+  @apply border-indigo-100 transition duration-200 focus-within:-translate-y-0.5 focus-within:border-indigo-300 focus-within:bg-white focus-within:shadow-md;
+}
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl bg-coral px-5 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#df573e] active:translate-y-0;
+}
+.card {
+  @apply rounded-3xl border border-slate-100 bg-white shadow-soft;
+}
+.legend {
+  @apply h-3 w-3 rounded-sm;
+}
+.seat {
+  @apply grid h-11 w-11 place-items-center rounded-lg bg-mint text-[11px] font-bold text-ink transition hover:scale-105 disabled:cursor-not-allowed;
+}
+.seat.taken {
+  @apply bg-slate-200 text-slate-400 line-through;
+}
+.seat.selected {
+  @apply bg-coral text-white ring-4 ring-coral/15;
+}
+.input {
+  @apply w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition placeholder:text-slate-300 focus:border-coral focus:bg-white focus:ring-4 focus:ring-coral/10;
+}
